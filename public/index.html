@@ -1,0 +1,285 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Google Things to Do - Gestor de Productos</title>
+    <link rel="stylesheet" href="style.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+</head>
+<body>
+    <div class="container">
+        <header>
+            <h1><i class="fas fa-map-marked-alt"></i> Google Things to Do</h1>
+            <p class="subtitle">Gestor de Productos - Feed Generator</p>
+        </header>
+
+        <div class="dashboard">
+            <div class="feed-selector-section">
+                <div class="form-group" style="margin-bottom: 20px;">
+                    <label style="color: #4a5568; font-weight: 600; margin-right: 10px;">Feed Actual:</label>
+                    <select id="feed-selector" class="feed-select" onchange="changeFeed(this.value)">
+                        <option value="">Cargando feeds...</option>
+                    </select>
+                    <button onclick="showCreateFeedModal()" class="btn btn-small" style="margin-left: 10px;">
+                        <i class="fas fa-plus"></i> Nuevo Feed
+                    </button>
+                    <button id="delete-feed-btn" onclick="deleteCurrentFeed()" class="btn btn-small" style="margin-left: 5px; background: #fc8181; display: none;">
+                        <i class="fas fa-trash"></i> Eliminar Feed
+                    </button>
+                </div>
+            </div>
+
+            <div class="stats">
+                <div class="stat-card">
+                    <h3><i class="fas fa-box"></i> Total Productos</h3>
+                    <p id="total-products">0</p>
+                </div>
+                <div class="stat-card">
+                    <h3><i class="fas fa-download"></i> Última Actualización</h3>
+                    <p id="last-update">--</p>
+                </div>
+            </div>
+
+            <div class="actions">
+                <button onclick="showAddProduct()" class="btn btn-primary">
+                    <i class="fas fa-plus"></i> Nuevo Producto
+                </button>
+                <button onclick="validateCurrentFeed()" class="btn">
+                    <i class="fas fa-check-double"></i> Validar feed
+                </button>
+                <button onclick="downloadFeed()" class="btn btn-success">
+                    <i class="fas fa-file-export"></i> Descargar Feed JSON
+                </button>
+                <button onclick="loadProducts()" class="btn btn-secondary">
+                    <i class="fas fa-sync"></i> Actualizar Lista
+                </button>
+            </div>
+
+            <div class="product-form" id="product-form" style="display: none;">
+                <h3><i class="fas fa-edit"></i> Formulario de Producto</h3>
+                <form id="productForm">
+                    <div class="form-section">
+                        <h4>Información Básica</h4>
+                        <div class="form-group">
+                            <label>ID del Producto:</label>
+                            <input type="text" id="productId" placeholder="product-1">
+                        </div>
+                        <div class="form-group">
+                            <label>Brand Name (Nombre de Marca):</label>
+                            <div class="lang-inputs">
+                                <div class="lang-input">
+                                    <label class="lang-label">Inglés:</label>
+                                    <input type="text" id="brandNameEn" placeholder="Brand name in English">
+                                </div>
+                                <div class="lang-input">
+                                    <label class="lang-label">Español:</label>
+                                    <input type="text" id="brandNameEs" placeholder="Nombre de marca en Español">
+                                </div>
+                                <div class="lang-input">
+                                    <label class="lang-label">Chino (zh-HK):</label>
+                                    <input type="text" id="brandNameZh" placeholder="品牌名稱">
+                                </div>
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <label>Título:</label>
+                            <div class="lang-inputs">
+                                <div class="lang-input">
+                                    <label class="lang-label">Inglés:</label>
+                                    <input type="text" id="titleEn" placeholder="Tour name in English">
+                                </div>
+                                <div class="lang-input">
+                                    <label class="lang-label">Español:</label>
+                                    <input type="text" id="titleEs" placeholder="Nombre del tour en Español">
+                                </div>
+                                <div class="lang-input">
+                                    <label class="lang-label">Chino (zh-HK):</label>
+                                    <input type="text" id="titleZh" placeholder="旅遊名稱">
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="form-section">
+                        <h4>Descripción</h4>
+                        <div class="form-group">
+                            <label>Descripción:</label>
+                            <div class="lang-inputs">
+                                <div class="lang-input">
+                                    <label class="lang-label">Inglés:</label>
+                                    <textarea id="descEn" rows="3" placeholder="Description in English (HTML allowed)"></textarea>
+                                </div>
+                                <div class="lang-input">
+                                    <label class="lang-label">Español:</label>
+                                    <textarea id="descEs" rows="3" placeholder="Descripción en Español (HTML permitido)"></textarea>
+                                </div>
+                                <div class="lang-input">
+                                    <label class="lang-label">Chino (zh-HK):</label>
+                                    <textarea id="descZh" rows="3" placeholder="描述（允許 HTML）"></textarea>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="form-section">
+                        <h4>Rating</h4>
+                        <div class="form-row">
+                            <div class="form-group">
+                                <label>Rating Promedio:</label>
+                                <input type="number" id="ratingAvg" min="0" max="5" step="0.1" value="4.5">
+                            </div>
+                            <div class="form-group">
+                                <label>Cantidad de Reviews:</label>
+                                <input type="number" id="ratingCount" min="0" value="100">
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="form-section">
+                        <h4>Características</h4>
+                        <div id="features-container">
+                            <div class="feature-item">
+                                <select class="feature-type">
+                                    <option value="TEXT_FEATURE_INCLUSION">Inclusión</option>
+                                    <option value="TEXT_FEATURE_HIGHLIGHT">Destacado</option>
+                                    <option value="TEXT_FEATURE_MUST_KNOW">Información Importante</option>
+                                </select>
+                                <input type="text" class="feature-text-en" placeholder="Text in English (HTML allowed)">
+                                <input type="text" class="feature-text-es" placeholder="Texto en Español (HTML permitido)">
+                                <input type="text" class="feature-text-zh" placeholder="文本（允許 HTML）">
+                                <button type="button" class="btn-remove" onclick="removeFeature(this)">×</button>
+                            </div>
+                        </div>
+                        <button type="button" class="btn btn-small" onclick="addFeature()">
+                            <i class="fas fa-plus"></i> Añadir Característica
+                        </button>
+                    </div>
+
+                    <div class="form-section">
+                        <h4>Media Relacionada (Fotos)</h4>
+                        <div id="media-container">
+                            <div class="media-item">
+                                <input type="text" class="media-url" placeholder="URL de la imagen (http://...)">
+                                <select class="media-type">
+                                    <option value="MEDIA_TYPE_PHOTO">Foto</option>
+                                    <option value="MEDIA_TYPE_VIDEO">Video</option>
+                                </select>
+                                <input type="text" class="media-attribution" placeholder="Atribución (opcional)">
+                                <button type="button" class="btn-remove" onclick="removeMedia(this)">×</button>
+                            </div>
+                        </div>
+                        <button type="button" class="btn btn-small" onclick="addMedia()">
+                            <i class="fas fa-plus"></i> Añadir Media
+                        </button>
+                    </div>
+
+                    <div class="form-section">
+                        <h4>Opciones de Producto</h4>
+                        <div id="options-container">
+                            <!-- Las opciones se añadirán dinámicamente -->
+                        </div>
+                        <button type="button" class="btn btn-small" onclick="addProductOption()">
+                            <i class="fas fa-plus"></i> Añadir Opción de Producto
+                        </button>
+                    </div>
+
+                    <div class="form-section">
+                        <h4>Operador</h4>
+                        <div class="form-group">
+                            <label>Nombre del Operador:</label>
+                            <div class="lang-inputs">
+                                <div class="lang-input">
+                                    <label class="lang-label">Inglés:</label>
+                                    <input type="text" id="operatorNameEn" placeholder="Operator name in English">
+                                </div>
+                                <div class="lang-input">
+                                    <label class="lang-label">Español:</label>
+                                    <input type="text" id="operatorNameEs" placeholder="Nombre del operador en Español">
+                                </div>
+                                <div class="lang-input">
+                                    <label class="lang-label">Chino (zh-HK):</label>
+                                    <input type="text" id="operatorNameZh" placeholder="運營商名稱">
+                                </div>
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <label>Teléfono del Operador:</label>
+                            <input type="text" id="operatorPhone" placeholder="01234567">
+                        </div>
+                        <div class="form-group">
+                            <label>Ubicaciones (Place IDs):</label>
+                            <div id="operator-locations-container">
+                                <div class="location-item">
+                                    <input type="text" class="location-place-id" placeholder="ChIJ3S-JXmauEmsRUcIaWtf4MzE">
+                                    <button type="button" class="btn-remove" onclick="removeOperatorLocation(this)">×</button>
+                                </div>
+                            </div>
+                            <button type="button" class="btn btn-small" onclick="addOperatorLocation()">
+                                <i class="fas fa-plus"></i> Añadir Ubicación
+                            </button>
+                        </div>
+                    </div>
+
+                    <div class="form-section">
+                        <h4>Configuración de Inventario</h4>
+                        <div class="form-group">
+                            <label>Tipos de Inventario:</label>
+                            <div id="inventory-types-container">
+                                <label class="checkbox-label">
+                                    <input type="checkbox" class="inventory-type" value="INVENTORY_TYPE_OPERATOR_DIRECT" checked>
+                                    INVENTORY_TYPE_OPERATOR_DIRECT
+                                </label>
+                                <label class="checkbox-label">
+                                    <input type="checkbox" class="inventory-type" value="INVENTORY_TYPE_GOOGLE">
+                                    INVENTORY_TYPE_GOOGLE
+                                </label>
+                                <label class="checkbox-label">
+                                    <input type="checkbox" class="inventory-type" value="INVENTORY_TYPE_THIRD_PARTY">
+                                    INVENTORY_TYPE_THIRD_PARTY
+                                </label>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="form-buttons">
+                        <button type="submit" class="btn btn-primary">Guardar Producto</button>
+                        <button type="button" class="btn btn-secondary" onclick="hideForm()">Cancelar</button>
+                    </div>
+                </form>
+            </div>
+
+            <div class="products-list">
+                <h3><i class="fas fa-list"></i> Lista de Productos</h3>
+                <div id="products-container">
+                    <p>Cargando productos...</p>
+                </div>
+            </div>
+        </div>
+
+        <footer>
+            <p>Things To Do Feed Builder</p>
+        </footer>
+    </div>
+
+    <!-- Modal para crear nuevo feed -->
+    <div id="create-feed-modal" class="modal" style="display: none;">
+        <div class="modal-content">
+            <span class="modal-close" onclick="hideCreateFeedModal()">&times;</span>
+            <h3><i class="fas fa-plus-circle"></i> Crear Nuevo Feed</h3>
+            <div class="form-group">
+                <label>Nombre del Feed:</label>
+                <input type="text" id="new-feed-name" placeholder="nombre-del-feed" maxlength="50">
+                <small style="color: #718096; display: block; margin-top: 5px;">Solo letras, números, guiones y guiones bajos</small>
+            </div>
+            <div class="form-buttons">
+                <button onclick="createFeed()" class="btn btn-primary">Crear Feed</button>
+                <button onclick="hideCreateFeedModal()" class="btn btn-secondary">Cancelar</button>
+            </div>
+        </div>
+    </div>
+
+    <script src="/lib/price.js"></script>
+    <script src="app.js"></script>
+</body>
+</html>

@@ -1,0 +1,189 @@
+{
+  "feed_metadata": {
+    "shard_id": 0,
+    "total_shards_count": 1,
+    "processing_instruction": "PROCESS_AS_SNAPSHOT",
+    "nonce": 1760000000000
+  },
+  "products": [
+    {
+      "id": "demo-city-museum",
+      "product_type": "PRODUCT_TYPE_GUIDED_TOUR",
+      "title": {
+        "localized_texts": [
+          {
+            "language_code": "en",
+            "text": "Guided tour of the City Museum"
+          },
+          {
+            "language_code": "es",
+            "text": "Visita guiada al Museo de la Ciudad"
+          }
+        ]
+      },
+      "description": {
+        "localized_texts": [
+          {
+            "language_code": "en",
+            "text": "<p>Two-hour guided visit with skip-the-line entry.</p>"
+          },
+          {
+            "language_code": "es",
+            "text": "<p>Visita guiada de dos horas con entrada sin colas.</p>"
+          }
+        ]
+      },
+      "rating": {
+        "average_value": 4.7,
+        "rating_count": 1284
+      },
+      "product_features": [
+        {
+          "feature_type": "TEXT_FEATURE_INCLUSION",
+          "value": {
+            "localized_texts": [
+              {
+                "language_code": "en",
+                "text": "Official guide"
+              },
+              {
+                "language_code": "es",
+                "text": "Guía oficial"
+              }
+            ]
+          }
+        }
+      ],
+      "related_media": [
+        {
+          "url": "https://example.com/img/city-museum.jpg",
+          "type": "MEDIA_TYPE_PHOTO"
+        }
+      ],
+      "options": [
+        {
+          "id": "demo-city-museum-std",
+          "title": {
+            "localized_texts": [
+              {
+                "language_code": "en",
+                "text": "Guided tour · 2 h"
+              },
+              {
+                "language_code": "es",
+                "text": "Visita guiada · 2 h"
+              }
+            ]
+          },
+          "landing_page": {
+            "url": "https://example.com/tours/city-museum?option=std"
+          },
+          "duration_sec": 7200,
+          "related_locations": [
+            {
+              "relation_type": "RELATION_TYPE_ADMISSION_TICKET",
+              "location": {
+                "location": {
+                  "place_id": "ChIJ_demo_place_id_1"
+                }
+              }
+            }
+          ],
+          "price_options": [
+            {
+              "id": "adult",
+              "title": "Adult",
+              "price": {
+                "currency_code": "EUR",
+                "units": "29",
+                "nanos": 900000000
+              }
+            },
+            {
+              "id": "child",
+              "title": "Child (6-11)",
+              "price": {
+                "currency_code": "EUR",
+                "units": "14",
+                "nanos": 950000000
+              }
+            }
+          ],
+          "cancellation_policy": {
+            "refund_conditions": [
+              {
+                "min_duration_before_start_time_sec": 86400,
+                "refund_percent": 100
+              }
+            ]
+          }
+        }
+      ],
+      "operator": {
+        "google_business_profile_name": {
+          "localized_texts": [
+            {
+              "language_code": "en",
+              "text": "Demo Tours"
+            },
+            {
+              "language_code": "es",
+              "text": "Demo Tours"
+            }
+          ]
+        },
+        "locations": []
+      }
+    },
+    {
+      "id": "demo-old-town-walk",
+      "product_type": "PRODUCT_TYPE_GUIDED_TOUR",
+      "title": {
+        "localized_texts": [
+          {
+            "language_code": "en",
+            "text": "Old town walking tour"
+          },
+          {
+            "language_code": "es",
+            "text": "Paseo por el casco antiguo"
+          }
+        ]
+      },
+      "rating": {
+        "average_value": 4.5,
+        "rating_count": 0
+      },
+      "options": [
+        {
+          "id": "demo-old-town-walk-free",
+          "title": {
+            "localized_texts": [
+              {
+                "language_code": "en",
+                "text": "Free tour"
+              },
+              {
+                "language_code": "es",
+                "text": "Free tour"
+              }
+            ]
+          },
+          "landing_page": {
+            "url": "https://example.com/tours/old-town"
+          },
+          "price_options": [
+            {
+              "id": "tip",
+              "title": "Pay what you want",
+              "price": {
+                "currency_code": "EUR",
+                "units": "0"
+              }
+            }
+          ]
+        }
+      ]
+    }
+  ]
+}

@@ -1,0 +1,19 @@
+{
+  "name": "things-to-do-feed-builder",
+  "version": "2.0.0",
+  "private": true,
+  "description": "Editor local de feeds de productos para Google Things To Do, con validación de la especificación",
+  "main": "server.js",
+  "license": "MIT",
+  "engines": {
+    "node": ">=18"
+  },
+  "scripts": {
+    "start": "node server.js",
+    "test": "node --test",
+    "test:e2e": "node e2e/ui.e2e.mjs"
+  },
+  "dependencies": {
+    "express": "^4.22.3"
+  }
+}
